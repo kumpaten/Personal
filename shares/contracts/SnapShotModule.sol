@@ -11,7 +11,7 @@
 
 pragma solidity ^0.8.0;
 
-import "C:/Users/Alex Nikolic/Desktop/CFCoding/UseCases/shares/openzeppelin-contracts/contracts/token/ERC20/ERC20shortened.sol";
+import "C:/Users/Alex Nikolic/Desktop/CFCoding/UseCases/shares/contracts/ERC20shortened..sol";
 import "./ArraysUpgradeable.sol";
 
 abstract contract SnapShotModule is ERC20shortened {
