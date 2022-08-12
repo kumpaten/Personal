@@ -13,9 +13,13 @@ pragma solidity ^0.8.0;
 
 import "../interface/IRule.sol";
 
+/**
+ * @dev represents a mock rule and shows how rules should be set up and integrated into the RuleEngine, which by itself is integrated into the Stock contract.
+ * @notice this is a max transfer volume for shares
+ **/
 contract RuleMock is IRule {
-    uint8 constant AMOUNT_TOO_HIGH = 10;
-    string constant TEXT_AMOUNT_TOO_HIGH = "Amount too high";
+    uint8 constant AMOUNT_TOO_HIGH = 0x56;
+    string constant TEXT_AMOUNT_TOO_HIGH = "Transfer Volume Exceeded";
     string constant TEXT_CODE_NOT_FOUND = "Code not found";
 
     function isTransferValid(
@@ -31,7 +35,7 @@ contract RuleMock is IRule {
         address, /* _to */
         uint256 _amount
     ) public pure returns (uint8) {
-        return _amount < 20 ? 0 : AMOUNT_TOO_HIGH;
+        return _amount < 1000 ? 0x51 : AMOUNT_TOO_HIGH;
     }
 
     function canReturnTransferRestrictionCode(uint8 _restrictionCode)

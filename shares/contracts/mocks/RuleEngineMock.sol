@@ -15,29 +15,56 @@ import "../interface/IRule.sol";
 import "../interface/IRuleEngine.sol";
 import "./RuleMock.sol";
 
+/** ADD AUTHORIZATION MODULE FOR SECURITY
+ * ADD OPERATOR HERE WHICH IS SET BY THE STOCK CONTRACT WHEN A RULEENGINE IS SET
+ */
+
 contract RuleEngineMock is IRuleEngine {
     IRule[] internal _rules;
+    mapping(IRule => bool) internal _rulesRegistered;
 
-    constructor() {
-        _rules.push(new RuleMock());
-    }
+    //dropped constructor**********
 
     function setRules(IRule[] calldata rules) external {
         _rules = rules;
+        for (uint256 i = 0; i < rules.length; i++) {
+            _rulesRegistered[rules[i]] = true;
+        }
+    }
+
+    function addRules(IRule[] calldata rules) external {
+        for (uint256 i = 0; i < rules.length; i++) {
+            if (!_rulesRegistered[rules[i]]) {
+                _rulesRegistered[rules[i]] = true;
+                _rules.push(rules[i]);
+            }
+        }
+    }
+
+    function removeRule(uint256 index) public {
+        IRule temp = _rules[index];
+        _rules[index] = _rules[_rules.length - 1];
+        _rules[_rules.length - 1] = temp;
+        _rules.pop();
+        _rulesRegistered[temp] = false;
     }
 
     function ruleLength() external view returns (uint256) {
         return _rules.length;
     }
 
-    function rule(uint256 ruleId) external view returns (IRule) {
+    function getRule(uint256 ruleId) external view returns (IRule) {
         return _rules[ruleId];
     }
 
-    function rules() external view returns (IRule[] memory) {
+    function getRules() external view returns (IRule[] memory) {
         return _rules;
     }
 
+    /**
+     * @dev is called by the Stock contract. Function checks for rules in each Rule Contract and should return 0x51 on success due to the ERC1066 convention or return the corresponding restriction code
+     * @notice ERC1066 is found in RestrictionCodes and the dictionary of restrictions is within the shares contract
+     **/
     function detectTransferRestriction(
         address _from,
         address _to,
@@ -49,11 +76,11 @@ contract RuleEngineMock is IRuleEngine {
                 _to,
                 _amount
             );
-            if (restriction > 0) {
+            if (restriction != 0x51) {
                 return restriction;
             }
         }
-        return 0;
+        return 0x51;
     }
 
     function validateTransfer(
@@ -61,9 +88,10 @@ contract RuleEngineMock is IRuleEngine {
         address _to,
         uint256 _amount
     ) public view returns (bool) {
-        return detectTransferRestriction(_from, _to, _amount) == 0;
+        return detectTransferRestriction(_from, _to, _amount) == 0x51;
     }
 
+    /** @notice RULES must stick to the convention to ensure transparency when looking up a restriction code */
     function messageForTransferRestriction(uint8 _restrictionCode)
         public
         view
@@ -75,6 +103,6 @@ contract RuleEngineMock is IRuleEngine {
                     _rules[i].messageForTransferRestriction(_restrictionCode);
             }
         }
-        return "Unknown restriction code";
+        return "unknown code";
     }
 }

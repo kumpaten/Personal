@@ -23,9 +23,9 @@ interface IRuleEngine {
 
     function ruleLength() external view returns (uint256);
 
-    function rule(uint256 ruleId) external view returns (IRule);
+    function getRule(uint256 ruleId) external view returns (IRule);
 
-    function rules() external view returns (IRule[] memory);
+    function getRules() external view returns (IRule[] memory);
 
     function validateTransfer(
         address _from,

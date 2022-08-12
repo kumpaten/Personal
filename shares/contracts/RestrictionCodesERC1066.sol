@@ -12,6 +12,7 @@ abstract contract RestrictionCodes is Ownable {
         codeToText[0x51] = "Transfer successful";
         codeToText[0x54] = "Insufficient Funds";
         codeToText[0x59] = "No Funds";
+        codeToText[0x5A] = "Receiver not identified";
         codeToText[0x42] = "Transfer Paused";
     }
 

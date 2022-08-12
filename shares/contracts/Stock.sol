@@ -37,7 +37,8 @@ contract Stock is SnapShotModule, RestrictionCodes, Pausable {
     mapping(address => bytes16) internal identities;
     IRuleEngine public ruleEngine;
 
-    uint8 public dividendRate; //in basis points
+    uint8 public dividendRate; //in basis points //SUBJECT OF CHANGE
+    uint256 public dividend; //dividend amount that gets assigned in distributionCreateParameters
 
     OCF public paymentToken; //assign paymentToken if payment should be made on-chain
     address public operator;
@@ -203,6 +204,9 @@ contract Stock is SnapShotModule, RestrictionCodes, Pausable {
         if (paused()) {
             return 0x42; //Paused
         }
+        if (identities[_to] == "") {
+            return 0x5A;
+        }
         if (address(ruleEngine) != address(0)) {
             return ruleEngine.detectTransferRestriction(_from, _to, _value);
         }
@@ -224,6 +228,7 @@ contract Stock is SnapShotModule, RestrictionCodes, Pausable {
         } else if (address(ruleEngine) != address(0)) {
             return ruleEngine.messageForTransferRestriction(_restrictionCode);
         }
+        return "unknown code";
     }
 
     /**
@@ -486,16 +491,60 @@ contract Stock is SnapShotModule, RestrictionCodes, Pausable {
     /**
      * @dev dividends can be paid out as payment tokens via this function, sufficient funds have to be provided within the payment token contract
      * @param _value the entire dividend amount which gets split, should have 18 decimals
-     **/
-    function payDividend(uint256 _value) public onlyOwner {
-        uint256 totalDistribution = snapshotTotalSupply(_getCurrentSnapshot());
+    function payDividend(uint256 time, uint256 _value) public onlyOwner {
+        uint256 totalDistribution = snapshotTotalSupply(time);
         for (uint256 i = 0; i < shareholders.length; i++) {
-            uint256 snapshotTokens = snapshotBalanceOf(
-                _getCurrentSnapshot(),
-                shareholders[i]
-            );
+            uint256 snapshotTokens = snapshotBalanceOf(time, shareholders[i]);
             uint256 dividend = (_value * snapshotTokens) / totalDistribution;
             paymentToken.transfer(shareholders[i], dividend);
         }
+    }
+     **/
+
+    /** ==================================================== DISTRIBUTION OF DIVIDENDS ======================================================== */
+
+    mapping(address => bool) private flaggedShareholders;
+    uint256 public distributionTime;
+
+    // makes SnapShot and leads mapping, updates dividend to be paid
+    function distributionSetEligibility(address[] memory _flaggedShareholders)
+        public
+        onlyOwner
+    {
+        for (uint256 i = 0; i < _flaggedShareholders.length; i++) {
+            flaggedShareholders[_flaggedShareholders[i]] = true;
+        }
+    }
+
+    /**
+     * @dev call to make allowances and prepare for shareholders to claim their tokens
+     * @param amount should be 18 decimals and represents entire dividend amount */
+    function distributionCreateParameters(uint256 amount) public onlyOwner {
+        pause();
+        for (uint256 i = 0; i < shareholders.length; i++) {
+            if (!flaggedShareholders[shareholders[i]]) {
+                uint256 res = (amount * balanceOf(shareholders[i])) /
+                    totalSupply();
+                distributionSetDeposit(shareholders[i], res);
+            }
+        }
+        dividend = amount;
+    }
+
+    /** @notice make transferfrom allowance in ocf contract
+     * kept public to allow for extraordinary allowances due to off chain storage of shares*/
+    function distributionSetDeposit(address shareholder, uint256 amount)
+        public
+        onlyOwner
+    {
+        paymentToken.approve(shareholder, amount);
+    }
+
+    /** @dev give shareholders the opportnitzy to retrieve their funds that were approved in the previous function */
+    function distributionClaimDeposit() public returns (bool) {
+        uint256 allowed = paymentToken.allowance(address(this), msg.sender);
+        bool success = paymentToken.transfer(msg.sender, allowed);
+        paymentToken.decreaseAllowance(msg.sender, allowed);
+        return success;
     }
 }
