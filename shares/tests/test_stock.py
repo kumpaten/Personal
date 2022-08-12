@@ -8,32 +8,6 @@ import pytest
 operator = accounts.load("deployer-rinkeby", password = "password")
 dummy = accounts.load("user-rinkeby", password = "password")
 
-class TestClassStock:
-  
-    @pytest.fixture(scope = "class")
-    def stock(self, Stock): 
-        return operator.deploy(Stock, "someStock", "SST", "www.MyURL.ch", "jeremiah")
-
-    def test_totalSupply_shouldBeZero(self, stock):
-        assert stock.totalSupply() == 0
-    
-    def test_owner_shouldBeOperator(self, stock):
-        assert stock.owner() == operator
-
-    def test_pauser_shouldbeOperator(self, stock):
-        assert stock.hasPauserRole() == operator
-    
-    def test_snapshotter_shouldbeOperator(self, stock):
-        assert stock.hasSnapshotRole() == operator
-    
-    def test_contactInformation_isCorrectAndReturnsList(self, stock):
-        assert stock.getContactInformation() == ("jeremiah", "www.MyURL.ch")
-    
-    @given(amount=strategy('uint', max_value=100))
-    def test_issue_correspondsCorrectly(self, stock, amount):
-        stock.issue(amount)
-        assert stock.balanceOf(operator) == amount
-    
 class TestClassFailuresAtBeginning:
 
     @pytest.fixture(scope = "class")
@@ -66,6 +40,41 @@ class TestClassFailuresAtBeginning:
         stock.pause()
         with brownie.reverts("0x42"):
             stock.transfer(dummy, 10)
+
+    def test_callSnapshot_shouldFailBecauseNotOnwer(self, stock): #CHECK HASROLES FUNCTIONS BECAUSE ONLYOWNER
+        with brownie.reverts("not authorized"):
+            stock.scheduleSnapshot(3030303030, {"from": dummy})
+
+class TestClassStock:
+  
+    @pytest.fixture(scope = "class")
+    def stock(self, Stock): 
+        return operator.deploy(Stock, "someStock", "SST", "www.MyURL.ch", "jeremiah")
+
+    def test_totalSupply_shouldBeZero(self, stock):
+        assert stock.totalSupply() == 0
+    
+    def test_owner_shouldBeOperator(self, stock):
+        assert stock.owner() == operator
+
+    def test_pauser_shouldbeOperator(self, stock):
+        assert stock.hasPauserRole() == operator
+    
+    def test_snapshotter_shouldbeOperator(self, stock):
+        assert stock.hasSnapshotRole() == operator
+    
+    def test_contactInformation_isCorrectAndReturnsList(self, stock):
+        assert stock.getContactInformation() == ("jeremiah", "www.MyURL.ch")
+    
+    @given(amount=strategy('uint', max_value=100))
+    def test_issue_correspondsCorrectly(self, stock, amount):
+        stock.issue(amount)
+        assert stock.balanceOf(operator) == amount
+    
+
+    
+    
+
 
 
 

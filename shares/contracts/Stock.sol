@@ -618,15 +618,15 @@ contract Stock is SnapShotModule, RestrictionCodes, Pausable {
 
     /** @dev show addresses that have role */
 
-    function hasSnapshotRole() public view onlyOwner returns (address) {
+    function hasSnapshotRole() public view returns (address) {
         return _snapshotter;
     }
 
-    function hasOperatorRole() public view onlyOwner returns (address) {
+    function hasOperatorRole() public view returns (address) {
         return owner();
     }
 
-    function hasPauserRole() public view onlyOwner returns (address) {
+    function hasPauserRole() public view returns (address) {
         return _pauser;
     }
 }
