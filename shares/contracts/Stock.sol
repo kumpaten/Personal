@@ -32,49 +32,6 @@ contract Stock is SnapShotModule, RestrictionCodes, Pausable {
     event LogRedeemed(uint256 value);
     event LogIssued(uint256 value);
 
-    address[] public shareholders;
-    mapping(address => bool) private shareholderAddrToBool;
-    mapping(address => bytes16) internal identities;
-    IRuleEngine public ruleEngine;
-
-    uint256 public dividend; //dividend amount that gets assigned in distributionCreateParameters
-
-    /** @dev split privileges between 3 roles including the owner of the cotract
-     ** @param _snapshotter can schedule, reschedule and unschedule snapshots
-     ** @param _operator is the owner of the contract and can reassign, destroy, redeem, issue, setRuleEngine etc.
-     ** @param _pauser can pause the trading
-     ** @notice by default the owner is covering all roles
-     **/
-    address private _snapshotter;
-    address private _operator;
-    address private _pauser;
-
-    mapping(address => bool) private flaggedShareholders;
-    uint256 public distributionTime;
-
-    OCF public paymentToken; //assign paymentToken if payment should be made on-chain
-    address public operator;
-
-    /** @param referenceToTerms can be an URL to a termsheet
-     * @param contact can be any contactPoint
-     */
-    struct contactInformation {
-        string referenceToTerms;
-        string contact;
-    }
-
-    contactInformation public prospectus;
-
-    constructor(
-        string memory _name,
-        string memory _symbol, //ISIN for example
-        string memory _referenceToTerms,
-        string memory _contact
-    ) ERC20shortened(_name, _symbol) {
-        prospectus.referenceToTerms = _referenceToTerms;
-        prospectus.contact = _contact;
-    }
-
     /**
      * Purpose:
      * This event is emitted when rule engine is changed
@@ -86,9 +43,64 @@ contract Stock is SnapShotModule, RestrictionCodes, Pausable {
      * Purpose:
      * This event is emitted when the contact information is changed
      *
-     * @param contact - new contact information
+     * - new contact information
      */
-    event LogContactSet(bytes contact);
+    event LogContactSet(string, string);
+    /** Purpose:
+     ** tell which address got identified and is eligible to hold shares */
+    event gotIdentified(address acc);
+
+    /** Purpose:
+     ** emit event when dividends get dpeposited */
+    event divdidensDeposited(uint256 time, uint256 amount);
+    event dividendsClaimedBy(address claimer);
+
+    address[] public shareholders; //array of shareholders
+    mapping(address => bool) private shareholderAddrToBool; //check if shareholder is in array to prevent duplicates in array
+    /** @notice the idea is to map the bytes8 identity to a corresponding IBAN or similar off-chain, to have one unique identifier for each account one does hold */
+    mapping(address => bytes8) internal identities; //identity needs to be verified before shares can be acquired
+    IRuleEngine public ruleEngine; //the ruleEngine that holds the rules, gets assigned through function
+
+    uint256 public dividend; //dividend amount that gets assigned in distributionCreateParameters
+    mapping(address => bool) private flaggedShareholders; //shareholders that are identified non-eligible are flagged and excluded from dividend payments
+
+    /**@notice uint256 public distributionTime; @notice possibility to make dividend payments not available straight after the snapshot but to have shareholders to wait until the distributiontime**/
+
+    /** @dev split privileges between 3 roles including the owner of the cotract
+     ** @param _snapshotter can schedule, reschedule and unschedule snapshots
+     ** @param _operator is the owner of the contract and can reassign, destroy, redeem, issue, setRuleEngine etc.
+     ** @param _pauser can pause the trading
+     ** @notice by default the owner is covering all roles
+     **/
+    address private _snapshotter;
+    address private _operator;
+    address private _pauser;
+
+    OCF public paymentToken; //assign paymentToken if payment should be made on-chain
+
+    /** @param referenceToTerms can be an URL to a termsheet
+     * @param contact can be any contactPoint
+     */
+    struct contactInformation {
+        string referenceToTerms;
+        string contact;
+    }
+
+    contactInformation public prospectus; //prospectus with information
+
+    constructor(
+        string memory _name,
+        string memory _symbol, //ISIN for example
+        string memory _referenceToTerms,
+        string memory _contact
+    ) ERC20shortened(_name, _symbol) {
+        prospectus.referenceToTerms = _referenceToTerms;
+        prospectus.contact = _contact;
+        _pauser = msg.sender;
+        _snapshotter = msg.sender;
+
+        emit LogContactSet(_referenceToTerms, _contact);
+    }
 
     modifier isIdentified(address to) {
         require(identities[to] != "", "Receiver not identified");
@@ -120,7 +132,7 @@ contract Stock is SnapShotModule, RestrictionCodes, Pausable {
         public
         view
         onlyOwner
-        returns (bytes16[] memory)
+        returns (bytes8[] memory)
     {
         return _identity(shareholder);
     }
@@ -133,9 +145,9 @@ contract Stock is SnapShotModule, RestrictionCodes, Pausable {
     function _identity(address[] memory shareholder)
         internal
         view
-        returns (bytes16[] memory)
+        returns (bytes8[] memory)
     {
-        bytes16[] memory shareholderIdentities = new bytes16[](
+        bytes8[] memory shareholderIdentities = new bytes8[](
             shareholder.length
         );
         for (uint256 i = 0; i < shareholder.length; i++) {
@@ -150,14 +162,15 @@ contract Stock is SnapShotModule, RestrictionCodes, Pausable {
      *
      * @param _ident - the potential/actual shareholder identity
      */
-    function setIdentity(address shareholder, bytes16 _ident)
+    function setIdentity(address shareholder, bytes8 _ident)
         external
         onlyOwner
     {
         identities[shareholder] = _ident;
+        emit gotIdentified(shareholder);
     }
 
-    function showMyIdentity() public view returns (bytes16) {
+    function showMyIdentity() public view returns (bytes8) {
         return identities[msg.sender];
     }
 
@@ -418,6 +431,19 @@ contract Stock is SnapShotModule, RestrictionCodes, Pausable {
         return (prospectus.contact, prospectus.referenceToTerms);
     }
 
+    function setContactInformation(string memory ref, string memory contact)
+        external
+        onlyOwner
+    {
+        if (bytes(ref).length != 0) {
+            prospectus.referenceToTerms = ref;
+        }
+        if (bytes(contact).length != 0) {
+            prospectus.contact = contact;
+        }
+        emit LogContactSet(ref, contact);
+    }
+
     /** @notice give Reference to a paymentToken contract
      * @param _paymentToken address of the contract
      */
@@ -440,7 +466,7 @@ contract Stock is SnapShotModule, RestrictionCodes, Pausable {
         if (msg.sender != address(paymentToken)) {
             revert NotOCFcalling();
         }
-        if (from != operator) {
+        if (from != owner()) {
             transferTokenFallback(from, value);
 
             emit LogIssued(value);
@@ -483,7 +509,7 @@ contract Stock is SnapShotModule, RestrictionCodes, Pausable {
     /**
      * @dev schedule Snapshots, internal functions are in Snapshot Module
      */
-    function scheduleSnapshot(uint256 time) public isSnapshotter {
+    function scheduleSnapshot(uint256 time) external isSnapshotter {
         _scheduleSnapshot(time);
     }
 
@@ -491,7 +517,7 @@ contract Stock is SnapShotModule, RestrictionCodes, Pausable {
      * @dev reschedule Snapshots, -"-
      **/
     function rescheduleSnapshot(uint256 oldTime, uint256 newTime)
-        public
+        external
         isSnapshotter
         returns (uint256)
     {
@@ -499,7 +525,7 @@ contract Stock is SnapShotModule, RestrictionCodes, Pausable {
     }
 
     function unscheduleSnapshot(uint256 time)
-        public
+        external
         isSnapshotter
         returns (uint256)
     {
@@ -523,7 +549,7 @@ contract Stock is SnapShotModule, RestrictionCodes, Pausable {
 
     // makes SnapShot and leads mapping, updates dividend to be paid
     function distributionSetEligibility(address[] memory _flaggedShareholders)
-        public
+        external
         onlyOwner
     {
         for (uint256 i = 0; i < _flaggedShareholders.length; i++) {
@@ -534,7 +560,7 @@ contract Stock is SnapShotModule, RestrictionCodes, Pausable {
     /**
      * @dev call to make allowances and prepare for shareholders to claim their tokens
      * @param amount should be 18 decimals and represents entire dividend amount */
-    function distributionCreateParameters(uint256 amount) public onlyOwner {
+    function distributionCreateParameters(uint256 amount) external onlyOwner {
         pause();
         for (uint256 i = 0; i < shareholders.length; i++) {
             if (!flaggedShareholders[shareholders[i]]) {
@@ -544,6 +570,7 @@ contract Stock is SnapShotModule, RestrictionCodes, Pausable {
             }
         }
         dividend = amount;
+        emit divdidensDeposited(block.timestamp, amount);
     }
 
     /** @notice make transferfrom allowance in ocf contract
@@ -556,35 +583,36 @@ contract Stock is SnapShotModule, RestrictionCodes, Pausable {
     }
 
     /** @dev give shareholders the opportnitzy to retrieve their funds that were approved in the previous function */
-    function distributionClaimDeposit() public returns (bool) {
+    function distributionClaimDeposit() external returns (bool) {
         uint256 allowed = paymentToken.allowance(address(this), msg.sender);
         bool success = paymentToken.transfer(msg.sender, allowed);
         paymentToken.decreaseAllowance(msg.sender, allowed);
+        emit dividendsClaimedBy(msg.sender);
         return success;
     }
 
     /** ======================================= AUTHORIZATION MODULE ============================================= **/
 
     /** @dev Grant roles to accounts */
-    function grantSnapshotRole(address acc) public onlyOwner {
+    function grantSnapshotRole(address acc) external onlyOwner {
         _snapshotter = acc;
     }
 
-    function grantOperatorRole(address acc) public onlyOwner {
+    function grantOperatorRole(address acc) external onlyOwner {
         transferOwnership(acc);
     }
 
-    function grantPauserRole(address acc) public onlyOwner {
+    function grantPauserRole(address acc) external onlyOwner {
         _pauser = acc;
     }
 
     /** @dev revoke roles from accounts
      ** owner cannot be revoked for security **/
-    function revokeSnapshotRole() public onlyOwner {
+    function revokeSnapshotRole() external onlyOwner {
         _snapshotter = address(0);
     }
 
-    function revokePauserRole() public onlyOwner {
+    function revokePauserRole() external onlyOwner {
         _pauser = address(0);
     }
 
