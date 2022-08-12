@@ -66,9 +66,15 @@
 				"inputs": [
 					{
 						"indexed": false,
-						"internalType": "bytes",
-						"name": "contact",
-						"type": "bytes"
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					},
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "",
+						"type": "string"
 					}
 				],
 				"name": "LogContactSet",
@@ -251,6 +257,51 @@
 					}
 				],
 				"name": "Unpaused",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "time",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "divdidensDeposited",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "claimer",
+						"type": "address"
+					}
+				],
+				"name": "dividendsClaimedBy",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "acc",
+						"type": "address"
+					}
+				],
+				"name": "gotIdentified",
 				"type": "event"
 			},
 			{
@@ -474,12 +525,69 @@
 			},
 			{
 				"inputs": [],
-				"name": "dividendRate",
+				"name": "distributionClaimDeposit",
 				"outputs": [
 					{
-						"internalType": "uint8",
+						"internalType": "bool",
 						"name": "",
-						"type": "uint8"
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "distributionCreateParameters",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "shareholder",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "distributionSetDeposit",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address[]",
+						"name": "_flaggedShareholders",
+						"type": "address[]"
+					}
+				],
+				"name": "distributionSetEligibility",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "dividend",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -519,6 +627,84 @@
 			{
 				"inputs": [
 					{
+						"internalType": "address",
+						"name": "acc",
+						"type": "address"
+					}
+				],
+				"name": "grantOperatorRole",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "acc",
+						"type": "address"
+					}
+				],
+				"name": "grantPauserRole",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "acc",
+						"type": "address"
+					}
+				],
+				"name": "grantSnapshotRole",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "hasOperatorRole",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "hasPauserRole",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "hasSnapshotRole",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "address[]",
 						"name": "shareholder",
 						"type": "address[]"
@@ -527,9 +713,9 @@
 				"name": "identity",
 				"outputs": [
 					{
-						"internalType": "bytes16[]",
+						"internalType": "bytes8[]",
 						"name": "",
-						"type": "bytes16[]"
+						"type": "bytes8[]"
 					}
 				],
 				"stateMutability": "view",
@@ -606,19 +792,6 @@
 			},
 			{
 				"inputs": [],
-				"name": "operator",
-				"outputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [],
 				"name": "owner",
 				"outputs": [
 					{
@@ -648,19 +821,6 @@
 					}
 				],
 				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "_value",
-						"type": "uint256"
-					}
-				],
-				"name": "payDividend",
-				"outputs": [],
-				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -758,6 +918,20 @@
 			},
 			{
 				"inputs": [],
+				"name": "revokePauserRole",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "revokeSnapshotRole",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "ruleEngine",
 				"outputs": [
 					{
@@ -785,12 +959,17 @@
 			{
 				"inputs": [
 					{
-						"internalType": "uint8",
-						"name": "_rate",
-						"type": "uint8"
+						"internalType": "string",
+						"name": "ref",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "contact",
+						"type": "string"
 					}
 				],
-				"name": "setDividendRate",
+				"name": "setContactInformation",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -803,9 +982,9 @@
 						"type": "address"
 					},
 					{
-						"internalType": "bytes16",
+						"internalType": "bytes8",
 						"name": "_ident",
-						"type": "bytes16"
+						"type": "bytes8"
 					}
 				],
 				"name": "setIdentity",
@@ -850,9 +1029,9 @@
 				"name": "showMyIdentity",
 				"outputs": [
 					{
-						"internalType": "bytes16",
+						"internalType": "bytes8",
 						"name": "",
-						"type": "bytes16"
+						"type": "bytes8"
 					}
 				],
 				"stateMutability": "view",
@@ -941,7 +1120,7 @@
 					},
 					{
 						"internalType": "bytes",
-						"name": "data",
+						"name": "",
 						"type": "bytes"
 					}
 				],
@@ -1076,11 +1255,6 @@
 		],
 		"devdoc": {
 			"events": {
-				"LogContactSet(bytes)": {
-					"params": {
-						"contact": "- new contact information"
-					}
-				},
 				"LogRuleEngineSet(address)": {
 					"params": {
 						"newRuleEngine": "- new rule engine address"
@@ -1148,6 +1322,21 @@
 						"_0": "code of the rejection reason"
 					}
 				},
+				"distributionClaimDeposit()": {
+					"details": "give shareholders the opportnitzy to retrieve their funds that were approved in the previous function "
+				},
+				"distributionCreateParameters(uint256)": {
+					"details": "call to make allowances and prepare for shareholders to claim their tokens",
+					"params": {
+						"amount": "should be 18 decimals and represents entire dividend amount "
+					}
+				},
+				"grantSnapshotRole(address)": {
+					"details": "Grant roles to accounts "
+				},
+				"hasSnapshotRole()": {
+					"details": "show addresses that have role "
+				},
 				"increaseAllowance(address,uint256)": {
 					"details": "Increase the amount of tokens that an owner allowed to a spender.",
 					"params": {
@@ -1178,12 +1367,6 @@
 				"paused()": {
 					"details": "Returns true if the contract is paused, and false otherwise."
 				},
-				"payDividend(uint256)": {
-					"details": "dividends can be paid out as payment tokens via this function, sufficient funds have to be provided within the payment token contract",
-					"params": {
-						"_value": "the entire dividend amount which gets split, should have 18 decimals*"
-					}
-				},
 				"reassign(address,address)": {
 					"params": {
 						"original": "- original address",
@@ -1201,10 +1384,13 @@
 				"rescheduleSnapshot(uint256,uint256)": {
 					"details": "reschedule Snapshots, -\"-*"
 				},
+				"revokeSnapshotRole()": {
+					"details": "revoke roles from accounts** owner cannot be revoked for security *"
+				},
 				"scheduleSnapshot(uint256)": {
 					"details": "schedule Snapshots, internal functions are in Snapshot Module"
 				},
-				"setIdentity(address,bytes16)": {
+				"setIdentity(address,bytes8)": {
 					"params": {
 						"_ident": "- the potential/actual shareholder identity"
 					}
@@ -1219,7 +1405,6 @@
 				},
 				"tokenFallback(address,uint256,bytes)": {
 					"params": {
-						"data": "is empty",
 						"from": "defaults to the msg.sender of the transfer function in the payment Token contract"
 					}
 				},
@@ -1248,15 +1433,26 @@
 					"details": "restrictionCodes need to be compliant with the ERC1066 standard"
 				}
 			},
+			"stateVariables": {
+				"_snapshotter": {
+					"details": "split privileges between 3 roles including the owner of the cotract** @param _snapshotter can schedule, reschedule and unschedule snapshots** @param _operator is the owner of the contract and can reassign, destroy, redeem, issue, setRuleEngine etc.** @param _pauser can pause the trading** @notice by default the owner is covering all roles*"
+				}
+			},
 			"version": 1
 		},
 		"userdoc": {
 			"events": {
-				"LogContactSet(bytes)": {
-					"notice": "Purpose: This event is emitted when the contact information is changed"
+				"LogContactSet(string,string)": {
+					"notice": "Purpose: This event is emitted when the contact information is changed - new contact information"
 				},
 				"LogRuleEngineSet(address)": {
 					"notice": "Purpose: This event is emitted when rule engine is changed"
+				},
+				"divdidensDeposited(uint256,uint256)": {
+					"notice": "Purpose:** emit event when dividends get dpeposited "
+				},
+				"gotIdentified(address)": {
+					"notice": "Purpose:** tell which address got identified and is eligible to hold shares "
 				}
 			},
 			"kind": "user",
@@ -1270,6 +1466,12 @@
 				"destroy(address[])": {
 					"notice": "Purpose; To destroy issued tokens. Conditions: Only issuer can execute this function."
 				},
+				"distributionSetDeposit(address,uint256)": {
+					"notice": "make transferfrom allowance in ocf contract kept public to allow for extraordinary allowances due to off chain storage of shares"
+				},
+				"distributionSetEligibility(address[])": {
+					"notice": "==================================================== DISTRIBUTION OF DIVIDENDS ======================================================== "
+				},
 				"issue(uint256)": {
 					"notice": "Purpose: Issue tokens on the owner address"
 				},
@@ -1279,7 +1481,7 @@
 				"redeem(uint256)": {
 					"notice": "Purpose: Redeem tokens on the owner address"
 				},
-				"setIdentity(address,bytes16)": {
+				"setIdentity(address,bytes8)": {
 					"notice": "Purpose Set identity of a potential/actual shareholder. Can only be called by the potential/actual shareholder himself. Has to be encrypted data."
 				},
 				"setRuleEngine(address)": {
@@ -1312,6 +1514,14 @@
 		"remappings": []
 	},
 	"sources": {
+		"C:/Users/Alex Nikolic/Desktop/CFCoding/UseCases/shares/contracts/ERC20shortened..sol": {
+			"keccak256": "0x317752b7a6a3ed815d0dbe62f710d971ac80788aac55766042b945220b5a2fdc",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://5c5f1bbb15c9aa5143d25ffdc5758c82e6ae5af28399b82c166e943348fb72c8",
+				"dweb:/ipfs/QmPN7TdbU8v75PJMjtzGmCvFt77EWuW6ruk1KXuuziY519"
+			]
+		},
 		"C:/Users/Alex Nikolic/Desktop/CFCoding/UseCases/shares/openzeppelin-contracts/contracts/access/Ownable.sol": {
 			"keccak256": "0xee2b6bc803215b66037612da0fe9f23ec3c99ff89db4ff05449a8df17c9befc5",
 			"license": "MIT",
@@ -1321,11 +1531,11 @@
 			]
 		},
 		"C:/Users/Alex Nikolic/Desktop/CFCoding/UseCases/shares/openzeppelin-contracts/contracts/security/Pausable.sol": {
-			"keccak256": "0x0446a6ff05ff4cd1dff3e60c87ea9dab2790f16a73dff7c405b1d5bc307667e1",
+			"keccak256": "0x0b7aadc930e970256fbc353a8f5081e217ac0b1443e3d317cf4cb4cdf2445e3e",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://91e6f325795607a2908d93616d9d3c0734696f94039d711969e549b2b4c696b4",
-				"dweb:/ipfs/QmcvEuiNU4kD5Gi5Knd2uPhwDBxTdd5Db8TBnZhxoJj4zZ"
+				"bzz-raw://72d90b3fc3a34b2db50c05839f6088f638ddf16aceb379c48e8aa724840fd5f6",
+				"dweb:/ipfs/QmUoEoGEDs4sq7pbSS1G4asybFW1B4jJ4YjExM39a34BhX"
 			]
 		},
 		"C:/Users/Alex Nikolic/Desktop/CFCoding/UseCases/shares/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol": {
@@ -1334,14 +1544,6 @@
 			"urls": [
 				"bzz-raw://b9fcc199b42eda8f9fe2c9c013371ade870224495d4d3d230f92a8cf6f7761bc",
 				"dweb:/ipfs/QmXNRDTDwKsqrEyHprtiYgbF2FrvBZvuYN2viXbPLnLkJ9"
-			]
-		},
-		"C:/Users/Alex Nikolic/Desktop/CFCoding/UseCases/shares/openzeppelin-contracts/contracts/token/ERC20/ERC20shortened.sol": {
-			"keccak256": "0xb1f213efba2ec231c36e1755cd52c1e3839cbd8f30d1b7ef81782d513d27ce21",
-			"license": "MIT",
-			"urls": [
-				"bzz-raw://703d63802aaeb7a30f8a4b64ba579fe160721c1b061497e821873a5ae75c1ce4",
-				"dweb:/ipfs/QmYHABc1ow1eiBkoc4RCZW5uEXvJZo1VbL5mwRETbVazFM"
 			]
 		},
 		"C:/Users/Alex Nikolic/Desktop/CFCoding/UseCases/shares/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol": {
@@ -1393,27 +1595,27 @@
 			]
 		},
 		"contracts/RestrictionCodesERC1066.sol": {
-			"keccak256": "0xe4343075c8ebcc5b529daff51827dbd5be88df924f50fa8c80dee98efa4a9b43",
+			"keccak256": "0xef571ffee11079b12a1de1f8b5159afca649bf8886b2f255cc912f8480de6b43",
 			"license": "ALEX",
 			"urls": [
-				"bzz-raw://8b03466fcdb428400544bdf274e8cd88179ff44112e035e7e01e2c95397470a7",
-				"dweb:/ipfs/QmU4dyRRzVCuUPVDAUR6CKyWYxE7jLvTRS721NxCXatLz3"
+				"bzz-raw://80d47b20f7878e864dd5efd9e973344265f007c70e580a5b2efd8034fa1b85c5",
+				"dweb:/ipfs/Qmcb3K5A3XpPUFotNuim2iN7hYWDFpnjB5oQTNwuVJVdx2"
 			]
 		},
 		"contracts/SnapShotModule.sol": {
-			"keccak256": "0x70295ca326a90f529e5858313f2eec8c677e81d6109c35d8468067664191bfc4",
+			"keccak256": "0x8b0357e551b8841c06b81cfb704f98fb56d7fb7e481444cd3025ecd7b4603c26",
 			"license": "ALEX",
 			"urls": [
-				"bzz-raw://ac7c40817ea82281057dd74f35de6de00444a85f51d1f00dd0fd85a1bd8e17b8",
-				"dweb:/ipfs/QmUvA2r9ujAd81P9GvTbRWHFkzYQ1HaQH7kKLCWDbaEJoK"
+				"bzz-raw://1631e2fadc1538a4a902bab309141eb360b49d6f68814994c56140833ae4b28e",
+				"dweb:/ipfs/QmQ2rg79oVQwAKESQV5i6KuzWqen9r7GAW9Rj7GgyMSd2i"
 			]
 		},
 		"contracts/Stock.sol": {
-			"keccak256": "0x55d99053300e1c5473a4e74f48af31a4770272ff10c3b535c0181bc5d301edb7",
+			"keccak256": "0xe1c19b05823ce95b30ff2b63685da971e0f479a3d24d32baf8ebfa9c488b6a18",
 			"license": "ALEX",
 			"urls": [
-				"bzz-raw://95b1ef8816dfa53a07656e915abf45fc4c0384e754ace26ba93820402b7c50c3",
-				"dweb:/ipfs/QmXQQsSSVn1MJniquRYBq9tFxZuihq8TSbP4SfecPhpjHF"
+				"bzz-raw://872293b5c2b9170310da4f4b4a4a22f410a840022956657d27c4cf7ed0c03896",
+				"dweb:/ipfs/QmX9JLCLB1sx4Mv29PVCCT1DYcKz5S1QdonsyDL5n7zEQ4"
 			]
 		},
 		"contracts/interface/IRule.sol": {
@@ -1425,11 +1627,11 @@
 			]
 		},
 		"contracts/interface/IRuleEngine.sol": {
-			"keccak256": "0xa4f54211f7e2cf6b08fd29a6dd77ee20c516569ced3b84b48c3fd645e5bc9f67",
+			"keccak256": "0xc5aa7efc66095a19384aa1daf13acc14eabd4ab00454cce8a1ebc57bcaf95796",
 			"license": "ALEX",
 			"urls": [
-				"bzz-raw://8a21485d58bad1d2d9e84c3db977917bf9efe95742a8fec091782c5a28e05384",
-				"dweb:/ipfs/Qmcesfmot6kYXDVYJcoX95m83DuqQ1NManidADuYWbK2wn"
+				"bzz-raw://329110a3ee589a6117d583e40135ee44077519195abaaa86619cd24461f78e1d",
+				"dweb:/ipfs/Qmdv36CHmVrM7Ga35HX4wXpXtek4U5ifTmwFHGcWFAjd6W"
 			]
 		}
 	},

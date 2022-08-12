@@ -2,7 +2,7 @@
 
 pragma solidity ^0.8.0;
 
-import "C:/Users/Alex Nikolic/Desktop/CFCoding/UseCases/shares/openzeppelin-contracts/contracts/security/Pausable.sol";
+import "./Pausable.sol";
 import "./SnapShotModule.sol"; //holds ERC20
 import "./interface/IRuleEngine.sol";
 import "./OCF.sol";
