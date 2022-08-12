@@ -20,7 +20,7 @@ import "C:/Users/Alex Nikolic/Desktop/CFCoding/UseCases/shares/openzeppelin-cont
  * @notice this is a max cap for shareholders, no one can have more than 5000 shares
  * @notice some RULES are dependent on context like this one, others can be universally applicable like transfer volume exceeded
  **/
-contract RuleMock is IRule, Ownable {
+contract MaxCap is IRule, Ownable {
     uint8 constant BALANCE_TOO_HIGH = 0x57;
     string constant TEXT_BALANCE_TOO_HIGH = "exeeds max cap";
     string constant TEXT_CODE_NOT_FOUND = "Code not found";

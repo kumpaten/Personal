@@ -37,8 +37,20 @@ contract Stock is SnapShotModule, RestrictionCodes, Pausable {
     mapping(address => bytes16) internal identities;
     IRuleEngine public ruleEngine;
 
-    uint8 public dividendRate; //in basis points //SUBJECT OF CHANGE
     uint256 public dividend; //dividend amount that gets assigned in distributionCreateParameters
+
+    /** @dev split privileges between 3 roles including the owner of the cotract
+     ** @param _snapshotter can schedule, reschedule and unschedule snapshots
+     ** @param _operator is the owner of the contract and can reassign, destroy, redeem, issue, setRuleEngine etc.
+     ** @param _pauser can pause the trading
+     ** @notice by default the owner is covering all roles
+     **/
+    address private _snapshotter;
+    address private _operator;
+    address private _pauser;
+
+    mapping(address => bool) private flaggedShareholders;
+    uint256 public distributionTime;
 
     OCF public paymentToken; //assign paymentToken if payment should be made on-chain
     address public operator;
@@ -80,6 +92,16 @@ contract Stock is SnapShotModule, RestrictionCodes, Pausable {
 
     modifier isIdentified(address to) {
         require(identities[to] != "", "Receiver not identified");
+        _;
+    }
+
+    modifier isSnapshotter() {
+        require(msg.sender == hasSnapshotRole(), "not authorized");
+        _;
+    }
+
+    modifier isPauser() {
+        require(msg.sender == hasPauserRole(), "not authorized");
         _;
     }
 
@@ -380,16 +402,12 @@ contract Stock is SnapShotModule, RestrictionCodes, Pausable {
         return 0;
     }
 
-    function pause() public onlyOwner {
+    function pause() public isPauser {
         _pause();
     }
 
-    function unpause() public onlyOwner {
+    function unpause() public isPauser {
         _unpause();
-    }
-
-    function setDividendRate(uint8 _rate) public onlyOwner {
-        dividendRate = _rate;
     }
 
     function getContactInformation()
@@ -412,12 +430,12 @@ contract Stock is SnapShotModule, RestrictionCodes, Pausable {
 
     /** @notice is called by payment Token contract when tokens are transferred to the address of THIS contract (it is like buying shares with paymentTokens)
      * @param from defaults to the msg.sender of the transfer function in the payment Token contract
-     * @param data is empty
      */
+
     function tokenFallback(
         address from,
         uint256 value,
-        bytes memory data
+        bytes memory /*data*/
     ) public isIdentified(from) {
         if (msg.sender != address(paymentToken)) {
             revert NotOCFcalling();
@@ -465,7 +483,7 @@ contract Stock is SnapShotModule, RestrictionCodes, Pausable {
     /**
      * @dev schedule Snapshots, internal functions are in Snapshot Module
      */
-    function scheduleSnapshot(uint256 time) public onlyOwner {
+    function scheduleSnapshot(uint256 time) public isSnapshotter {
         _scheduleSnapshot(time);
     }
 
@@ -474,18 +492,18 @@ contract Stock is SnapShotModule, RestrictionCodes, Pausable {
      **/
     function rescheduleSnapshot(uint256 oldTime, uint256 newTime)
         public
-        onlyOwner
+        isSnapshotter
         returns (uint256)
     {
-        _rescheduleSnapshot(oldTime, newTime);
+        return _rescheduleSnapshot(oldTime, newTime);
     }
 
     function unscheduleSnapshot(uint256 time)
         public
-        onlyOwner
+        isSnapshotter
         returns (uint256)
     {
-        _unscheduleSnapshot(time);
+        return _unscheduleSnapshot(time);
     }
 
     /**
@@ -502,9 +520,6 @@ contract Stock is SnapShotModule, RestrictionCodes, Pausable {
      **/
 
     /** ==================================================== DISTRIBUTION OF DIVIDENDS ======================================================== */
-
-    mapping(address => bool) private flaggedShareholders;
-    uint256 public distributionTime;
 
     // makes SnapShot and leads mapping, updates dividend to be paid
     function distributionSetEligibility(address[] memory _flaggedShareholders)
@@ -546,5 +561,44 @@ contract Stock is SnapShotModule, RestrictionCodes, Pausable {
         bool success = paymentToken.transfer(msg.sender, allowed);
         paymentToken.decreaseAllowance(msg.sender, allowed);
         return success;
+    }
+
+    /** ======================================= AUTHORIZATION MODULE ============================================= **/
+
+    /** @dev Grant roles to accounts */
+    function grantSnapshotRole(address acc) public onlyOwner {
+        _snapshotter = acc;
+    }
+
+    function grantOperatorRole(address acc) public onlyOwner {
+        transferOwnership(acc);
+    }
+
+    function grantPauserRole(address acc) public onlyOwner {
+        _pauser = acc;
+    }
+
+    /** @dev revoke roles from accounts
+     ** owner cannot be revoked for security **/
+    function revokeSnapshotRole() public onlyOwner {
+        _snapshotter = address(0);
+    }
+
+    function revokePauserRole() public onlyOwner {
+        _pauser = address(0);
+    }
+
+    /** @dev show addresses that have role */
+
+    function hasSnapshotRole() public view onlyOwner returns (address) {
+        return _snapshotter;
+    }
+
+    function hasOperatorRole() public view onlyOwner returns (address) {
+        return owner();
+    }
+
+    function hasPauserRole() public view onlyOwner returns (address) {
+        return _pauser;
     }
 }
