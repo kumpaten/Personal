@@ -1,0 +1,1131 @@
+{
+	"compiler": {
+		"version": "0.8.7+commit.e28d00a7"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "_name",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "_symbol",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "_contact",
+						"type": "string"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "spender",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "value",
+						"type": "uint256"
+					}
+				],
+				"name": "Approval",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "contact",
+						"type": "string"
+					}
+				],
+				"name": "LogContactSet",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address[]",
+						"name": "shareholders",
+						"type": "address[]"
+					}
+				],
+				"name": "LogDestroyed",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "value",
+						"type": "uint256"
+					}
+				],
+				"name": "LogIssued",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "original",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "replacement",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "value",
+						"type": "uint256"
+					}
+				],
+				"name": "LogReassigned",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "value",
+						"type": "uint256"
+					}
+				],
+				"name": "LogRedeemed",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "newRuleEngine",
+						"type": "address"
+					}
+				],
+				"name": "LogRuleEngineSet",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "previousOwner",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "newOwner",
+						"type": "address"
+					}
+				],
+				"name": "OwnershipTransferred",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "Paused",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "oldTime",
+						"type": "uint256"
+					},
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "newTime",
+						"type": "uint256"
+					}
+				],
+				"name": "SnapshotSchedule",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "time",
+						"type": "uint256"
+					}
+				],
+				"name": "SnapshotUnschedule",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "from",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "value",
+						"type": "uint256"
+					}
+				],
+				"name": "Transfer",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "Unpaused",
+				"type": "event"
+			},
+			{
+				"inputs": [],
+				"name": "SNAPSHOOTER_ROLE",
+				"outputs": [
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "spender",
+						"type": "address"
+					}
+				],
+				"name": "allowance",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_spender",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_value",
+						"type": "uint256"
+					}
+				],
+				"name": "approve",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "account",
+						"type": "address"
+					}
+				],
+				"name": "balanceOf",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_from",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_to",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_value",
+						"type": "uint256"
+					}
+				],
+				"name": "canTransfer",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "contact",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "decimals",
+				"outputs": [
+					{
+						"internalType": "uint8",
+						"name": "",
+						"type": "uint8"
+					}
+				],
+				"stateMutability": "pure",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_spender",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_subtractedValue",
+						"type": "uint256"
+					}
+				],
+				"name": "decreaseAllowance",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address[]",
+						"name": "shareholders",
+						"type": "address[]"
+					}
+				],
+				"name": "destroy",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_from",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_to",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_value",
+						"type": "uint256"
+					}
+				],
+				"name": "detectTransferRestriction",
+				"outputs": [
+					{
+						"internalType": "uint8",
+						"name": "",
+						"type": "uint8"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getNextSnapshots",
+				"outputs": [
+					{
+						"internalType": "uint256[]",
+						"name": "",
+						"type": "uint256[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address[]",
+						"name": "shareholder",
+						"type": "address[]"
+					}
+				],
+				"name": "identity",
+				"outputs": [
+					{
+						"internalType": "bytes[]",
+						"name": "",
+						"type": "bytes[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_spender",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_addedValue",
+						"type": "uint256"
+					}
+				],
+				"name": "increaseAllowance",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_value",
+						"type": "uint256"
+					}
+				],
+				"name": "issue",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint8",
+						"name": "_restrictionCode",
+						"type": "uint8"
+					}
+				],
+				"name": "messageForTransferRestriction",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "name",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "owner",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "pause",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "paused",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "original",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "replacement",
+						"type": "address"
+					}
+				],
+				"name": "reassign",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_value",
+						"type": "uint256"
+					}
+				],
+				"name": "redeem",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "renounceOwnership",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "ruleEngine",
+				"outputs": [
+					{
+						"internalType": "contract IRuleEngine",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "_contact",
+						"type": "string"
+					}
+				],
+				"name": "setContact",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "bytes",
+						"name": "_identity",
+						"type": "bytes"
+					}
+				],
+				"name": "setMyIdentity",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "contract IRuleEngine",
+						"name": "_ruleEngine",
+						"type": "address"
+					}
+				],
+				"name": "setRuleEngine",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "showMyIdentity",
+				"outputs": [
+					{
+						"internalType": "bytes",
+						"name": "",
+						"type": "bytes"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "time",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					}
+				],
+				"name": "snapshotBalanceOf",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "time",
+						"type": "uint256"
+					}
+				],
+				"name": "snapshotTotalSupply",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "symbol",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "totalSupply",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_to",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_value",
+						"type": "uint256"
+					}
+				],
+				"name": "transfer",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_from",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_to",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_value",
+						"type": "uint256"
+					}
+				],
+				"name": "transferFrom",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "newOwner",
+						"type": "address"
+					}
+				],
+				"name": "transferOwnership",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "unpause",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"author": "Sébastien Krafft - <sebastien.krafft@mtpelerin.com> errors: CM01: Attempt to reassign from an original address which is 0x0 CM02: Attempt to reassign to a replacement address is 0x0 CM03: Attempt to reassign to replacement address which is the same as the original address CM04: Transfer rejected by Rule Engine CM05: Attempt to reassign from an original address which does not have any tokens CM06: Cannot call destroy with owner address contained in parameter",
+			"details": "CMTA20 contract",
+			"events": {
+				"LogContactSet(string)": {
+					"params": {
+						"contact": "- new contact information"
+					}
+				},
+				"LogRuleEngineSet(address)": {
+					"params": {
+						"newRuleEngine": "- new rule engine address"
+					}
+				}
+			},
+			"kind": "dev",
+			"methods": {
+				"allowance(address,address)": {
+					"details": "See {IERC20-allowance}."
+				},
+				"approve(address,uint256)": {
+					"details": "Approve the passed address to spend the specified amount of tokens on behalf of msg.sender.",
+					"params": {
+						"_spender": "The address which will spend the funds.",
+						"_value": "The amount of tokens to be spent."
+					}
+				},
+				"balanceOf(address)": {
+					"details": "See {IERC20-balanceOf}."
+				},
+				"canTransfer(address,address,uint256)": {
+					"details": "check if _value token can be transferred from _from to _to",
+					"params": {
+						"_from": "address The address which you want to send tokens from",
+						"_to": "address The address which you want to transfer to",
+						"_value": "uint256 the amount of tokens to be transferred"
+					}
+				},
+				"decimals()": {
+					"details": "Returns the number of decimals used to get its user representation. For example, if `decimals` equals `2`, a balance of `505` tokens should be displayed to a user as `5.05` (`505 / 10 ** 2`). Tokens usually opt for a value of 18, imitating the relationship between Ether and Wei. This is the value {ERC20} uses, unless this function is overridden; NOTE: This information is only used for _display_ purposes: it in no way affects any of the arithmetic of the contract, including {IERC20-balanceOf} and {IERC20-transfer}."
+				},
+				"decreaseAllowance(address,uint256)": {
+					"details": "Decrease the amount of tokens that an owner allowed to a spender.",
+					"params": {
+						"_spender": "The address which will spend the funds.",
+						"_subtractedValue": "The amount of tokens to decrease the allowance by."
+					}
+				},
+				"destroy(address[])": {
+					"params": {
+						"shareholders": "- list of shareholders"
+					}
+				},
+				"detectTransferRestriction(address,address,uint256)": {
+					"details": "check if _value token can be transferred from _from to _to",
+					"params": {
+						"_from": "address The address which you want to send tokens from",
+						"_to": "address The address which you want to transfer to",
+						"_value": "uint256 the amount of tokens to be transferred"
+					},
+					"returns": {
+						"_0": "code of the rejection reason"
+					}
+				},
+				"increaseAllowance(address,uint256)": {
+					"details": "Increase the amount of tokens that an owner allowed to a spender.",
+					"params": {
+						"_addedValue": "The amount of tokens to increase the allowance by.",
+						"_spender": "The address which will spend the funds."
+					}
+				},
+				"issue(uint256)": {
+					"params": {
+						"_value": "- amount of newly issued tokens"
+					}
+				},
+				"messageForTransferRestriction(uint8)": {
+					"details": "returns the human readable explaination corresponding to the error code returned by detectTransferRestriction",
+					"params": {
+						"_restrictionCode": "The error code returned by detectTransferRestriction"
+					},
+					"returns": {
+						"_0": "The human readable explaination corresponding to the error code returned by detectTransferRestriction"
+					}
+				},
+				"name()": {
+					"details": "Returns the name of the token."
+				},
+				"owner()": {
+					"details": "Returns the address of the current owner."
+				},
+				"paused()": {
+					"details": "Returns true if the contract is paused, and false otherwise."
+				},
+				"reassign(address,address)": {
+					"params": {
+						"original": "- original address",
+						"replacement": "- replacement address"
+					}
+				},
+				"redeem(uint256)": {
+					"params": {
+						"_value": "- amount of redeemed tokens"
+					}
+				},
+				"renounceOwnership()": {
+					"details": "Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner. NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner."
+				},
+				"setContact(string)": {
+					"params": {
+						"_contact": "- the contact information for the shareholders"
+					}
+				},
+				"setMyIdentity(bytes)": {
+					"params": {
+						"_identity": "- the potential/actual shareholder identity"
+					}
+				},
+				"setRuleEngine(address)": {
+					"params": {
+						"_ruleEngine": "- the rule engine that will approve/reject transfers"
+					}
+				},
+				"symbol()": {
+					"details": "Returns the symbol of the token, usually a shorter version of the name."
+				},
+				"totalSupply()": {
+					"details": "See {IERC20-totalSupply}."
+				},
+				"transfer(address,uint256)": {
+					"details": "transfer token for a specified address",
+					"params": {
+						"_to": "The address to transfer to.",
+						"_value": "The amount to be transferred."
+					}
+				},
+				"transferFrom(address,address,uint256)": {
+					"details": "Transfer tokens from one address to another",
+					"params": {
+						"_from": "address The address which you want to send tokens from",
+						"_to": "address The address which you want to transfer to",
+						"_value": "uint256 the amount of tokens to be transferred"
+					}
+				},
+				"transferOwnership(address)": {
+					"details": "Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner."
+				}
+			},
+			"title": "CMTA20",
+			"version": 1
+		},
+		"userdoc": {
+			"events": {
+				"LogContactSet(string)": {
+					"notice": "Purpose: This event is emitted when the contact information is changed"
+				},
+				"LogRuleEngineSet(address)": {
+					"notice": "Purpose: This event is emitted when rule engine is changed"
+				}
+			},
+			"kind": "user",
+			"methods": {
+				"destroy(address[])": {
+					"notice": "Purpose; To destroy issued tokens. Conditions: Only issuer can execute this function."
+				},
+				"identity(address[])": {
+					"notice": "Purpose Retrieve identity of a potential/actual shareholder"
+				},
+				"issue(uint256)": {
+					"notice": "Purpose: Issue tokens on the owner address"
+				},
+				"reassign(address,address)": {
+					"notice": "Purpose: To withdraw tokens from the original address and transfer those tokens to the replacement address. Use in cases when e.g. investor loses access to his account. Conditions: Throw error if the `original` address supplied is not a shareholder. Only issuer can execute this function."
+				},
+				"redeem(uint256)": {
+					"notice": "Purpose: Redeem tokens on the owner address"
+				},
+				"setContact(string)": {
+					"notice": "Purpose Set contact point for shareholders"
+				},
+				"setMyIdentity(bytes)": {
+					"notice": "Purpose Set identity of a potential/actual shareholder. Can only be called by the potential/actual shareholder himself. Has to be encrypted data."
+				},
+				"setRuleEngine(address)": {
+					"notice": "Purpose Set optional rule engine by owner"
+				}
+			},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/CMTA20.sol": "CMTA20"
+		},
+		"evmVersion": "london",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"C:/Users/Alex Nikolic/Desktop/CFCoding/UseCases/shares/openzeppelin-contracts/contracts/access/Ownable.sol": {
+			"keccak256": "0xee2b6bc803215b66037612da0fe9f23ec3c99ff89db4ff05449a8df17c9befc5",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://127be279bb6b2f6106127ea6b431cfc879f9018dd76b7575841821be9eef3488",
+				"dweb:/ipfs/QmfXqvL6sKx256hrVuQcSnNtirZrpm4JUbDFXwGHKgrrXU"
+			]
+		},
+		"C:/Users/Alex Nikolic/Desktop/CFCoding/UseCases/shares/openzeppelin-contracts/contracts/security/Pausable.sol": {
+			"keccak256": "0x0b7aadc930e970256fbc353a8f5081e217ac0b1443e3d317cf4cb4cdf2445e3e",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://72d90b3fc3a34b2db50c05839f6088f638ddf16aceb379c48e8aa724840fd5f6",
+				"dweb:/ipfs/QmUoEoGEDs4sq7pbSS1G4asybFW1B4jJ4YjExM39a34BhX"
+			]
+		},
+		"C:/Users/Alex Nikolic/Desktop/CFCoding/UseCases/shares/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol": {
+			"keccak256": "0xe877160222d3171cadc921d37659d896452e358fe3cc1a6874838542a7d86f65",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://12e3cb35e13842db85926416f0828704b88f494ffa600b667351420c1781d365",
+				"dweb:/ipfs/QmWDnECrywFVcjzbG2evWhQ2aGQZJrdED57ErCyNdnihj3"
+			]
+		},
+		"C:/Users/Alex Nikolic/Desktop/CFCoding/UseCases/shares/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol": {
+			"keccak256": "0xdd286f7283325eb12ee50e41dac6be9665262e827b66f4f8952111ff77b6a130",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://567e5cfe5c64fb8c5f041393d42178447cf00880a2a2172a5a8e83131e1c24fa",
+				"dweb:/ipfs/QmY6KVSBk5xbtZuyhcQPNyJAATMZnmJ45TcBBAE7rzD5du"
+			]
+		},
+		"C:/Users/Alex Nikolic/Desktop/CFCoding/UseCases/shares/openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Metadata.sol": {
+			"keccak256": "0x0270cb4e50d6bcdd780df229606076d39df796860d266b5426f374c36f34fe89",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://511db944b3f0a57b56fda90d1e466cca6a0dea2297d816251966c8f025313973",
+				"dweb:/ipfs/QmRgu5uCaKkoRr3amWGfhy6bVwhpH5tr1vynaNQyEYiE4p"
+			]
+		},
+		"C:/Users/Alex Nikolic/Desktop/CFCoding/UseCases/shares/openzeppelin-contracts/contracts/utils/Context.sol": {
+			"keccak256": "0x81d5fc973a522c8909d60be6a201869d46aa47b030b8813f60616404628c2b94",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://9755b505799e622d964a843a8ed1fd60fedffca230178e5cb95ae9280df4dcd2",
+				"dweb:/ipfs/QmRkhUYUUgRZ2QYJjmtQct2ubyYwS3bdUMhbuFYM12VfYn"
+			]
+		},
+		"contracts/ArraysUpgradeable.sol": {
+			"keccak256": "0x0ece731baa7171c7b3069f3290fb59472d75b1532ac7db5d16b1cce7903458e7",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://3494e1e2c7b08f3fe9ba3bdff08f58a1db0d4d23b7a5493ea9024680e47dae6e",
+				"dweb:/ipfs/Qme6HpuwX46WmTHujXJmFQbd5hBrco9PyFYFafMHHG7rsX"
+			]
+		},
+		"contracts/CMTA20.sol": {
+			"keccak256": "0x37016848cb3b4a2f1970680cc6d6234d2e171bf586146e6fa253c7043e673548",
+			"license": "ALEX",
+			"urls": [
+				"bzz-raw://a43590e3308c4efefabded62c4a545e41f4649fc1415a3c9dc09373e69f1ad27",
+				"dweb:/ipfs/QmSt7XNrxyxYXrVHnz6JdbiFmNcNYtmqSmcSjA4TvSNdA6"
+			]
+		},
+		"contracts/MathUpgradeable.sol": {
+			"keccak256": "0xc1da1d3dfcd945d3c2f98b9ec83aa211c40c4683294093dd05d40c4f18810fc8",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://d0e23b7552d50c0db849c144c815052c67682e8d051e166bf01d910f08ca81a2",
+				"dweb:/ipfs/QmQo4MEQt3gZwWjKbFVrr9aymBwtYGsbttM8WiuDgJo5qB"
+			]
+		},
+		"contracts/SnapShotModule.sol": {
+			"keccak256": "0x495c0c6ee5e703e43b073b1640a446927531e24b5f3a23a12692772d2d090844",
+			"license": "ALEX",
+			"urls": [
+				"bzz-raw://fbf4b039c134a62e39ba962612545f32865a9630214d29a79afc10ae2e8a3c9d",
+				"dweb:/ipfs/QmZCjEYpHK1i8DJqR9aEPGExTwR7fVj9tJGdKBht2qTzGa"
+			]
+		},
+		"contracts/interface/IRule.sol": {
+			"keccak256": "0x540c12d32651e863da25261df51806fa0e48e70b3bb6dc0d7f4a2b68956dc78d",
+			"license": "ALEX",
+			"urls": [
+				"bzz-raw://1a41dd115951c8a6d8e4dd6f4e17154c111bf40723011685583751d9397bf1df",
+				"dweb:/ipfs/QmbZyx5ixXvLY5g79pPckiyUN26uCrYx8XztcS1VfS7yiv"
+			]
+		},
+		"contracts/interface/IRuleEngine.sol": {
+			"keccak256": "0xa4f54211f7e2cf6b08fd29a6dd77ee20c516569ced3b84b48c3fd645e5bc9f67",
+			"license": "ALEX",
+			"urls": [
+				"bzz-raw://8a21485d58bad1d2d9e84c3db977917bf9efe95742a8fec091782c5a28e05384",
+				"dweb:/ipfs/Qmcesfmot6kYXDVYJcoX95m83DuqQ1NManidADuYWbK2wn"
+			]
+		}
+	},
+	"version": 1
+}
